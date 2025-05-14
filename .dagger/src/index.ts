@@ -38,6 +38,17 @@ export class HelloDagger {
   }
 
   /**
+   * Serve the Astro App via Node
+   */
+  @func()
+  start(@argument({ defaultPath: "/" }) source: Directory): Container {
+    return this.buildEnv(source)
+      .withExec(["npm", "run", "build"])
+      .withExec(["npm", "start"])
+      .withExposedPort(4321)
+  }
+
+  /**
    * Return the result of running unit tests
    */
   @func()

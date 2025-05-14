@@ -7,13 +7,17 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test:unit": "vitest"
+    "test:unit": "vitest",
+    "start": "node ./dist/server/entry.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^9.2.1",
-    "astro": "^5.7.13"
+    "astro": "^5.7.13",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
+    "@dagger.io/dagger": "^0.18.7",
     "vitest": "^3.1.3"
   }
 }
