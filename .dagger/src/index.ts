@@ -27,25 +27,46 @@ export class HelloDagger {
    */
   @func()
   build(@argument({ defaultPath: "/" }) source: Directory): Container {
-    const build = this.buildEnv(source)
-      .withExec(["npm", "run", "build"])
-      .directory("./dist")
+    // Base stage: common workdir setup
+    const base = dag
+      .container()
+      .from("node:21-slim")
+      .withWorkdir("/app")
+
+    // prod-deps stage: install only production dependencies
+    const prodDeps = base
+      .withDirectory("/app", source, { include: ["package.json", "package-lock.json"] })
+      .withExec(["npm", "install", "--omit=dev"]);
+
+    // build-deps stage: install all dependencies (including dev)
+    const buildDeps = base
+      .withDirectory("/app", source)
+      .withMountedCache("/root/.npm", dag.cacheVolume("npm-cache"))
+      .withExec(["npm", "install"]);
+
+    // build stage: compile the application
+    const buildStage = buildDeps
+      .withExec(["npm", "run", "build"]);
+
+    // runtime stage: assemble production image
     return dag
       .container()
-      .from("nginx:1.25-alpine")
-      .withDirectory("/usr/share/nginx/html", build)
-      .withExposedPort(80)
-  }
-
-  /**
-   * Serve the Astro App via Node
-   */
-  @func()
-  start(@argument({ defaultPath: "/" }) source: Directory): Container {
-    return this.buildEnv(source)
-      .withExec(["npm", "run", "build"])
-      .withExec(["npm", "start"])
+      .from("node:21-slim")
+      .withWorkdir("/app")
+      // copy production deps
+      .withDirectory(
+        "/app/node_modules",
+        prodDeps.directory("/app/node_modules"),
+      )
+      // copy build output
+      .withDirectory(
+        "/app/dist",
+        buildStage.directory("/app/dist"),
+      )
+      .withEnvVariable("HOST", "0.0.0.0")
+      .withEnvVariable("PORT", "4321")
       .withExposedPort(4321)
+      .withEntrypoint(["node", "./dist/server/entry.mjs"])
   }
 
   /**
