@@ -18,7 +18,7 @@ export class HelloDagger {
   ): Promise<string> {
     await this.test(source)
     return await this.build(source).publish(
-      "ttl.sh/hello-dagger-" + Math.floor(Math.random() * 10000000),
+      "johnhkchen/ezstack-astro",
     )
   }
 
