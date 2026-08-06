@@ -8,7 +8,7 @@ import {
 } from "@dagger.io/dagger"
 
 @object()
-export class HelloDagger {
+export class EzstackAstro {
   /**
    * Publish the application container after building and testing it on-the-fly
    */
@@ -18,7 +18,7 @@ export class HelloDagger {
   ): Promise<string> {
     await this.test(source)
     return await this.build(source).publish(
-      "johnhkchen/ezstack-astro",
+      "docker.io/johnhkchen/ezstack-astro",
     )
   }
 

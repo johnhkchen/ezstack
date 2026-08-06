@@ -1,5 +1,5 @@
 {
-  "name": "hello-dagger",
+  "name": "ezstack-astro",
   "engineVersion": "v0.18.7",
   "sdk": {
     "source": "typescript"
@@ -9,6 +9,11 @@
       "name": "github-issue",
       "source": "github.com/kpenfound/dag/github-issue@b316e472d3de5bb0e54fe3991be68dc85e33ef38",
       "pin": "b316e472d3de5bb0e54fe3991be68dc85e33ef38"
+    },
+    {
+      "name": "hello-dagger",
+      "source": "github.com/johnhkchen/ezstack@3683e105f98ddb37550fdfd8ca1eddad9caff7d2",
+      "pin": "3683e105f98ddb37550fdfd8ca1eddad9caff7d2"
     },
     {
       "name": "workspace",
